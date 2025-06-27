@@ -140,7 +140,7 @@ void drawRays3D()
     int dof;
     float rx, ry, ra;
     float xo, yo;
-    float disT;
+    //float disT;
     
     ra = fixAng(pa + 30);
     
@@ -182,10 +182,8 @@ void drawRays3D()
             mp = my * mapX + mx;
             if(mp > 0 && mp < mapX * mapY && map[mp]==1) //hit
             {
-                dof=8;
+                dof = 8;
                 disV = cos(degToRad(ra)) * (rx - px) -sin(degToRad(ra)) * (ry - py);
-                
-
                 
             }
             else{ //check next horizontal
@@ -198,59 +196,63 @@ void drawRays3D()
         vx = rx;
         vy = ry;
         //========= check horizontal lines ==========
-        dof=0;
-        float disH=100000;
-        Tan=1.0/Tan;
-        if(sin(degToRad(ra))> 0.001)
+        dof = 0;
+        float disH = 100000;
+        Tan = 1.0 / Tan;
+        if(sin(degToRad(ra)) > 0.001) //looking up
         {
-            ry=(((int)py>>6)<<6) -0.0001;
-            rx=(py-ry)*Tan+px;
-            yo=-64;
-            xo=-yo*Tan;
+            ry = (((int)py >> 6) <<6) - 0.0001;
+            rx = (py - ry) * Tan + px;
+            yo = -64;
+            xo = -yo * Tan;
             
-        }//looking up
-        else if(sin(degToRad(ra))<-0.001)
+        }
+        else if(sin(degToRad(ra)) < -0.001) //looking down
         {
-            ry=(((int)py>>6)<<6)+64;
-            rx=(py-ry)*Tan+px;
-            yo= 64;
-            xo=-yo*Tan;
+            ry = (((int)py >> 6) << 6) + 64;
+            rx = (py - ry) * Tan + px;
+            yo = 64;
+            xo = -yo * Tan;
             
-        }//looking down
-        else
+        }
+        else //looking straight left or right
         {
-            rx=px;
-            ry=py;
-            dof=8;
+            rx = px;
+            ry = py;
+            dof = 8;
             
-        }                                                   //looking straight left or right
+        }
        
         while(dof<8)
         {
-            mx=(int)(rx)>>6;
-            my=(int)(ry)>>6;
-            mp=my*mapX+mx;
-            if(mp>0 && mp<mapX*mapY && map[mp]==1)
+            mx = (int)(rx)>>6;
+            my = (int)(ry)>>6;
+            mp = my * mapX + mx;
+            if(mp > 0 && mp < mapX * mapY && map[mp] == 1) //hit
             {
-                dof=8;
-                disH=cos(degToRad(ra))*(rx-px)-sin(degToRad(ra))*(ry-py);
+                dof = 8;
+                disH = cos(degToRad(ra)) * (rx - px) - sin(degToRad(ra)) * (ry - py);
                 
-            }//hit
-            else
+            }
+            else //check next horizontal
             {
-                rx+=xo;
-                ry+=yo;
-                dof+=1;
+                rx += xo;
+                ry += yo;
+                dof += 1;
                 
-            }                                               //check next horizontal
+            }
         }
-        if(disV<disH)
+        if(disV < disH)
         {
-            rx=vx;
-            ry=vy;
-            disH=disV;
-            glColor3f(0,0.6,0);
+            rx = vx;
+            ry = vy;
+            disH = disV;
+            glColor3f(0,1,1);
             
+        }
+        else
+        {
+            glColor3f(0, 1, 1);
         }
         glLineWidth(1);
         glBegin(GL_LINES);
@@ -273,7 +275,12 @@ void drawRays3D()
         disT = disT * cos(ca); // remove upper lines to get fisheye effect
         */
         
-        int lineH = (mapS*320)/(disH); if(lineH>320){ lineH=320;}                     //line height and limit
+        int lineH = (mapS * 320) / (disH);
+        if(lineH > 320)
+        {
+            lineH = 320;
+            
+        }                     //line height and limit
         int lineOff = 160 - (lineH>>1);
         glLineWidth(8);
         glBegin(GL_LINES);
@@ -281,7 +288,7 @@ void drawRays3D()
         glVertex2i(r * 8 + 530, lineH + lineOff);
         glEnd();
         
-        ra=fixAng(ra-1);
+        ra = fixAng(ra - 1);
     }
 }
 
